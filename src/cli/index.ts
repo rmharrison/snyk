@@ -14,6 +14,19 @@ import errors = require('../lib/error');
 import ansiEscapes = require('ansi-escapes');
 import {isPathToPackageFile} from '../lib/detect';
 
+import * as updateNotifier from 'update-notifier';
+var pkg = require('../../package.json');
+
+async function updateCheck() {
+    // Checks for available update and returns an instance
+    // Default updateCheckInterval is once a day
+    var notifier = updateNotifier({
+        pkg: pkg,
+    });
+    // Notify using the built-in convenience method
+    notifier.notify();
+}
+
 async function runCommand(args) {
   const result = await args.method(...args.options._);
 
@@ -108,6 +121,7 @@ function checkPaths(args) {
 }
 
 async function main() {
+  await updateCheck();
   checkRuntime();
 
   const args = argsLib(process.argv);
